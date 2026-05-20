@@ -28,7 +28,7 @@ This is a **portfolio / demo template**. Everything is saved locally to the brow
 - **PDF export** from the Cases list, the Roadmap, the Lifecycle view, and the Insights roadmap
 - Top-level **error boundary** that catches render errors and shows a recovery card instead of a blank screen
 - Friendly **empty states** everywhere
-- Six realistic, fictional seed cases (the Sprout & Stem demo) spanning every status, type, and priority
+- Six realistic, fictional seed cases (a generic B2B SaaS demo) spanning every status, type, and priority
 
 ## Tech stack
 
@@ -153,11 +153,15 @@ src/
 ## Notes & limitations
 
 - No accounts, no real auth — the "role" is just a local toggle. Anyone can switch to PM and see / edit everything. Don't ship this to production as-is.
-- Restriction email matching is demo-grade: it derives a synthetic email from the user's name (`Maya Lin` → `maya.lin@sproutandstem.example`). Replace this with a real identity claim once you have auth.
+- Restriction email matching is demo-grade: it derives a synthetic email from the user's name (`Maya Lin` → `maya.lin@example.com`). Replace this with a real identity claim once you have auth.
 - The PS counter never resets even when cases are deleted, per the design intent: case numbers are permanent.
 - Documents are stored as data URLs inside `localStorage`. The browser cap is roughly 5 MB total, so heavy attachment use will hit a quota error — the app catches it and surfaces a toast.
-- All seed data is fictional and uses the `@sproutandstem.example` domain.
+- All seed data is fictional and uses the `@example.com` domain (reserved by IANA, so it can never collide with a real address).
 
 ## License
 
-MIT — do whatever you'd like with it.
+All rights reserved. License terms TBD — please contact the author before reusing or redistributing this code.
+
+## About
+
+A template built by Galaxy Pham to help product organizations bring visibility and structure to roadmap prioritization. Demo data is fictional and used purely for illustration.

@@ -345,7 +345,7 @@ export function AppProvider({ children }) {
         return true;
       }
       const derivedEmail = state.userName
-        ? state.userName.toLowerCase().replace(/\s+/g, ".") + "@sproutandstem.example"
+        ? state.userName.toLowerCase().replace(/\s+/g, ".") + "@example.com"
         : null;
       if (derivedEmail && caseObj.allowed_emails.includes(derivedEmail)) {
         return true;

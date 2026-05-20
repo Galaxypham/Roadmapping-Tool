@@ -135,7 +135,7 @@ export default function Settings() {
       <Card>
         <CardHeader
           title="Identity"
-          description="Your display name is shown next to every action you take. The synthetic email used for restricted-case access is derived from this name (spaces become dots, plus @sproutandstem.example)."
+          description="Your display name is shown next to every action you take. The synthetic email used for restricted-case access is derived from this name (spaces become dots, plus @example.com)."
         />
         <CardBody className="space-y-3">
           <Field label="Display name">

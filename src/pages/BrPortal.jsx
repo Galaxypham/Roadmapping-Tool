@@ -86,7 +86,7 @@ export default function BrPortal() {
       status_changed_at: now,
       requestor_name: userName,
       requestor_email:
-        userName.toLowerCase().replace(/\s+/g, ".") + "@sproutandstem.example",
+        userName.toLowerCase().replace(/\s+/g, ".") + "@example.com",
       team: form.team.trim(),
       problem_description: form.problem_description.trim(),
       current_solution: form.current_solution.trim(),
