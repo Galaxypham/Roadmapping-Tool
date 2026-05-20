@@ -6,8 +6,8 @@ Capture incoming product requests (bug reports, tooling enhancements, new builds
 
 This is a **portfolio / demo template**. Everything is saved locally to the browser (`localStorage`). No backend, no auth, no servers. Fork it, change the copy, change the colors, and use it to demo a product workflow without standing up infrastructure.
 
-- **Live demo:** _add your Vercel URL here once deployed_
-- **Repo:** _add your GitHub repo URL here_
+- **Live demo:** <https://roadmapping-tool-seven.vercel.app>
+- **Repo:** <https://github.com/Galaxypham/Roadmapping-Tool>
 
 ---
 
