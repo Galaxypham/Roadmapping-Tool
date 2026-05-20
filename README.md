@@ -37,7 +37,9 @@ This template solves that by making request flow and decisions explicit:
 - Three roles: Business Requestor, Product Manager, Leadership
 - Pipeline statuses: `New -> Under Review -> Roadmapped -> On Hold -> Declined`
 - Lifecycle stages from Discovery through Deprecated, plus Off-track
+- BR intake `Fill with AI` flow (Gemini) to draft form fields from a plain-language project description
 - RICE scoring — (Reach × Impact × Confidence) ÷ Effort — with configurable weights per dimension and a roadmap threshold
+- RICE totals are shown as standalone weighted scores (not "out of max")
 - Drag-and-drop roadmap ranking with `@dnd-kit`
 - Leadership Insights with drill-down metrics
 - Case activity log + revision history
@@ -68,6 +70,12 @@ npm run dev
 ```
 
 Dev server: <http://localhost:5173>
+
+To enable BR "Fill with AI", set:
+
+```bash
+VITE_GEMINI_API_KEY=your_key_here
+```
 
 Other scripts:
 

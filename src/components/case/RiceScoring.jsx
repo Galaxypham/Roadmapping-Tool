@@ -12,7 +12,6 @@ import {
   RICE_TOOLTIPS,
 } from "../../lib/constants.js";
 import {
-  calculateMaxRiceTotal,
   calculateRice,
   formatRiceSummary,
   getRoadmapThreshold,
@@ -54,7 +53,6 @@ export function RiceScoring({
   });
   const [pendingReason, setPendingReason] = useState(false);
 
-  const maxTotal = useMemo(() => calculateMaxRiceTotal(riceConfig), [riceConfig]);
   const threshold = getRoadmapThreshold(riceConfig);
 
   const livePreview = useMemo(() => {
@@ -173,9 +171,7 @@ export function RiceScoring({
       <CardHeader
         title="RICE scoring"
         description={
-          "Each dimension is scored 1–5. Total = (Reach × Impact × Confidence) ÷ Effort (max " +
-          maxTotal +
-          "). Scores above " +
+          "Each dimension is scored 1–5. Total = (Reach × Impact × Confidence) ÷ Effort. Scores above " +
           threshold +
           " are roadmap candidates. Saving a score on a New case moves it to Under Review."
         }
@@ -218,7 +214,7 @@ export function RiceScoring({
             <div className="rounded-md bg-slate-50 px-4 py-3 ring-1 ring-inset ring-slate-200">
               <p className="text-xs uppercase tracking-wide text-slate-500">Total preview</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
-                {livePreview != null ? livePreview + " / " + maxTotal : "—"}
+                {livePreview != null ? livePreview : "—"}
               </p>
               {livePreview != null ? (
                 <div className="mt-2 space-y-1 text-xs">
@@ -268,9 +264,7 @@ export function RiceScoring({
             <div className="rounded-md bg-slate-50 px-4 py-3 ring-1 ring-inset ring-slate-200">
               <p className="text-xs uppercase tracking-wide text-slate-500">Total</p>
               <p className="mt-1 text-3xl font-semibold text-slate-900">
-                {caseObj.rice.weighted_total != null
-                  ? caseObj.rice.weighted_total + " / " + maxTotal
-                  : "—"}
+                {caseObj.rice.weighted_total != null ? caseObj.rice.weighted_total : "—"}
               </p>
               <p className="mt-1 text-xs text-slate-500">
                 Scored by {caseObj.rice.scored_by} on {formatTimestamp(caseObj.rice.scored_at)}
@@ -290,11 +284,7 @@ export function RiceScoring({
         description="Reasons help future you (and leadership) understand why a score moved."
         summary={
           livePreview != null
-            ? "Total will be " +
-              livePreview +
-              " / " +
-              maxTotal +
-              (meetsThreshold ? " and the case will move to Roadmapped." : ".")
+            ? "Total will be " + livePreview + (meetsThreshold ? " and the case will move to Roadmapped." : ".")
             : null
         }
         confirmLabel={hasScore ? "Update scores" : "Save scores"}
