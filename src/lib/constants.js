@@ -202,7 +202,7 @@ export const DEFAULT_RICE_CONFIG = {
   impact_weight: 1.0,
   confidence_weight: 1.0,
   effort_weight: 1.0,
-  roadmap_threshold: 15,
+  roadmap_threshold: 20,
 };
 
 export const RICE_SCORE_OPTIONS = [1, 2, 3, 4, 5];

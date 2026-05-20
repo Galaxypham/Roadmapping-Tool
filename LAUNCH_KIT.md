@@ -1,4 +1,4 @@
-# Roadmapping Tool — Launch Kit
+﻿# Roadmapping Tool — Launch Kit
 
 **Author:** Galaxy Pham
 **Live demo:** https://roadmapping-tool-seven.vercel.app
@@ -54,7 +54,7 @@ No backend. No auth servers. No setup required. Runs anywhere static files run, 
 Structured submission form with request type, priority, business impact, supporting links, and attachments. Auto case numbering that is permanent and non-reusable — even declined cases keep their number in the audit trail. Six realistic B2B SaaS seed cases preloaded for demo and onboarding purposes.
 
 **Triage and scoring**
-Five pipeline statuses: New 뿯↽ Under Review 뿯↽ Roadmapped 뿯↽ On Hold 뿯↽ Declined. Weighted RICE scoring (Reach 뿯½ Impact 뿯½ Confidence 뿯½ Effort) with PM-configurable weights and a roadmap threshold — making the "what gets built" decision explicit and defensible rather than instinct-based. Mandatory reason modal fires on every PM status change. Every mutation is logged with a timestamp and the actor's name.
+Five pipeline statuses: New 뿯↽ Under Review 뿯↽ Roadmapped 뿯↽ On Hold 뿯↽ Declined. Weighted RICE scoring - (Reach x Impact x Confidence) / Effort - with PM-configurable weights per dimension and a roadmap threshold — making the "what gets built" decision explicit and defensible rather than instinct-based. Mandatory reason modal fires on every PM status change. Every mutation is logged with a timestamp and the actor's name.
 
 **Roadmap**
 Drag-and-drop ranking with @dnd-kit. Ranked order surfaces in Leadership Insights and the roadmapped preset filter. Reorders are logged with reasons the same way status changes are.
@@ -198,7 +198,7 @@ It is a template and demo, not production software. There is no real auth — th
 So any product org can run the demo instantly with zero setup. The goal was to make the workflow evaluation frictionless — a team should be able to decide whether this model works for them in five minutes, not after an IT provisioning ticket.
 
 **Why RICE?**
-Because it is the most defensible lightweight framework: Reach 뿯½ Impact 뿯½ Confidence 뿯½ Effort. Configurable weights mean teams can tune it to their context without discarding it. The threshold concept makes the roadmapping decision explicit and auditable rather than vibes-based.
+Because it is the most defensible lightweight framework: (Reach x Impact x Confidence) / Effort. Configurable weights mean teams can tune it to their context without discarding it. The threshold concept makes the roadmapping decision explicit and auditable rather than vibes-based.
 
 **Can we fork and customize it?**
 See the LICENSE file in the repo for current terms. Seed data, color palette, and status labels all live in isolated files for easy swapping: src/lib/seed.js, tailwind.config.js, src/lib/constants.js.

@@ -37,7 +37,7 @@ This template solves that by making request flow and decisions explicit:
 - Three roles: Business Requestor, Product Manager, Leadership
 - Pipeline statuses: `New -> Under Review -> Roadmapped -> On Hold -> Declined`
 - Lifecycle stages from Discovery through Deprecated, plus Off-track
-- Weighted RICE scoring with configurable weights and roadmap threshold
+- RICE scoring — (Reach × Impact × Confidence) ÷ Effort — with configurable weights per dimension and a roadmap threshold
 - Drag-and-drop roadmap ranking with `@dnd-kit`
 - Leadership Insights with drill-down metrics
 - Case activity log + revision history

@@ -6,7 +6,11 @@ import {
 
 export const RICE_DIMENSIONS = ["reach", "impact", "confidence", "effort"];
 
-// Weighted sum of four 1–5 dimension scores.
+// True RICE formula: (Reach × Impact × Confidence) ÷ Effort.
+// Weights act as multipliers on each dimension — reach_weight, impact_weight,
+// and confidence_weight scale the numerator; effort_weight scales the
+// denominator (higher = heavier penalty for costly work).
+// With all weights at 1.0 this is standard unweighted RICE.
 export function calculateRice(scores, config) {
   if (!scores || !config) return null;
   const { reach, impact, confidence, effort } = scores;
@@ -31,24 +35,26 @@ export function calculateRice(scores, config) {
     }
   }
 
-  const total =
-    Number(reach) * config.reach_weight +
-    Number(impact) * config.impact_weight +
-    Number(confidence) * config.confidence_weight +
-    Number(effort) * config.effort_weight;
+  const numerator =
+    Number(reach) * config.reach_weight *
+    Number(impact) * config.impact_weight *
+    Number(confidence) * config.confidence_weight;
+  const denominator = Number(effort) * config.effort_weight;
 
-  return Math.round(total * 100) / 100;
+  if (denominator === 0) return null;
+  return Math.round((numerator / denominator) * 100) / 100;
 }
 
+// Maximum possible score: all numerator dimensions at 5, effort at 1 (minimum).
 export function calculateMaxRiceTotal(config) {
-  if (!config) return RICE_SCORE_MAX * 4;
-  return (
-    RICE_SCORE_MAX *
-    (config.reach_weight +
-      config.impact_weight +
-      config.confidence_weight +
-      config.effort_weight)
-  );
+  if (!config) return RICE_SCORE_MAX * RICE_SCORE_MAX * RICE_SCORE_MAX / RICE_SCORE_MIN;
+  const numerator =
+    RICE_SCORE_MAX * config.reach_weight *
+    RICE_SCORE_MAX * config.impact_weight *
+    RICE_SCORE_MAX * config.confidence_weight;
+  const denominator = RICE_SCORE_MIN * config.effort_weight;
+  if (denominator === 0) return null;
+  return Math.round((numerator / denominator) * 100) / 100;
 }
 
 export function getRoadmapThreshold(config) {

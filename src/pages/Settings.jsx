@@ -114,12 +114,12 @@ export default function Settings() {
     effort_weight: {
       title: "Effort weight",
       description:
-        "Multiplier for the Effort score (1–5). Default 1.0. Higher effort scores add to the total like other dimensions.",
+        "Multiplier for the Effort score in the denominator. Default 1.0. Increasing this weight penalizes high-effort work more heavily, lowering the total score.",
     },
     roadmap_threshold: {
       title: "Roadmap threshold",
       description:
-        "Cases scoring above this number are flagged as strong roadmap candidates in the RICE editor. PMs still decide when a case actually moves to Roadmapped. Default: 15.",
+        "Cases scoring above this number are flagged as strong roadmap candidates in the RICE editor. PMs still decide when a case actually moves to Roadmapped. Default: 20.",
     },
   };
 
@@ -163,8 +163,9 @@ export default function Settings() {
           <CardHeader
             title="RICE scoring"
             description={
-              "Each dimension is scored 1–5 on a case. Total = (Reach×R) + (Impact×I) + (Confidence×C) + (Effort×E). " +
-              "Cases scoring above the roadmap threshold are auto-moved to Roadmapped."
+              "Each dimension is scored 1–5 on a case. Total = (Reach × Impact × Confidence) ÷ Effort. " +
+              "Weights scale each dimension — reach, impact, and confidence weights multiply the numerator; effort weight multiplies the denominator (higher = heavier penalty for costly work). " +
+              "Cases scoring above the roadmap threshold are flagged as strong roadmap candidates."
             }
           />
           <CardBody className="space-y-4">

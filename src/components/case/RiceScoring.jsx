@@ -173,7 +173,7 @@ export function RiceScoring({
       <CardHeader
         title="RICE scoring"
         description={
-          "Each dimension is scored 1–5. Total = weighted sum (max " +
+          "Each dimension is scored 1–5. Total = (Reach × Impact × Confidence) ÷ Effort (max " +
           maxTotal +
           "). Scores above " +
           threshold +
