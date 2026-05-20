@@ -1,4 +1,4 @@
-# PS Intake Tool
+# Roadmapping Tool
 
 A calm, modern problem statement intake tool for Product Managers.
 
