@@ -54,7 +54,7 @@ No backend. No auth servers. No setup required. Runs anywhere static files run, 
 Structured submission form with request type, priority, business impact, supporting links, and attachments. Auto case numbering that is permanent and non-reusable - even declined cases keep their number in the audit trail. Six realistic B2B SaaS seed cases preloaded for demo and onboarding purposes. Business Requestors can also use **Fill with AI** to draft intake fields from a plain-language project description before submitting.
 
 **Triage and scoring**  
-Five pipeline statuses: New, Under Review, Roadmapped, On Hold, Declined. RICE scoring - (Reach x Impact x Confidence) / Effort - with PM-configurable weights per dimension and a roadmap threshold, making the "what gets built" decision explicit and defensible rather than instinct-based. RICE totals are shown as standalone weighted scores (not an "out of max" denominator). Mandatory reason modal fires on every PM status change. Every mutation is logged with a timestamp and the actor's name.
+Five pipeline statuses: New, Under Review, Roadmapped, On Hold, Declined. Industry-standard RICE scoring (Intercom, 2017) - `(Reach x Impact x Confidence) / Effort` - using the canonical scales: Reach as a raw count per fixed period (e.g. users/quarter), Impact on the `{0.25, 0.5, 1, 2, 3}` multiplier scale, Confidence as a percentage `{50%, 80%, 100%}`, Effort in person-months. No per-dimension weight knobs - the input scales are the weights, which is what makes RICE defensible and comparable across teams. A PM-configurable roadmap threshold flags strong candidates. Mandatory reason modal fires on every PM status change. Every mutation is logged with a timestamp and the actor's name.
 
 **Roadmap**  
 Drag-and-drop ranking with @dnd-kit. Ranked order surfaces in Leadership Insights and the roadmapped preset filter. Reorders are logged with reasons the same way status changes are.
@@ -123,7 +123,7 @@ Role-aware default views - BRs land on "My submissions," PMs land on "Needs tria
 | --- | --- | --- | --- | --- |
 | Tool build and deployment | Galaxy Pham | Galaxy Pham | Engineering | All users |
 | Onboarding and enablement | Galaxy Pham | Galaxy Pham | PM leads | All users |
-| RICE weight configuration | PM lead | PM lead | Leadership | BRs |
+| RICE scale calibration (Reach unit, time window) | PM lead | PM lead | Leadership | BRs |
 | Roadmap threshold decisions | PM lead | Leadership | PM lead | BRs |
 | Post-launch adoption tracking | Galaxy Pham | PM lead | Leadership | - |
 
@@ -137,7 +137,8 @@ Role-aware default views - BRs land on "My submissions," PMs land on "Needs tria
 | localStorage limits hit by heavy attachment use | Medium | Low | App surfaces a toast error; mitigated by moving to a backend in production |
 | Role toggle misuse - users switching roles to see restricted cases | Low | Medium | Production version requires real auth; demo version is not suitable for sensitive data |
 | Resistance from stakeholders accustomed to direct engineering access | High | High | Leadership alignment before launch; mandatory reason modal builds trust over time |
-| RICE weight misconfiguration inflating low-quality requests | Low | Medium | Default weights set to 1.0; changes require a documented reason and are logged globally |
+| Inconsistent RICE inputs across PMs (mixed time windows, sandbagged Effort) | Medium | Medium | Document the chosen Reach time window (e.g. "per quarter") in the team's intake guide; calibrate the roadmap threshold against 3-5 known-good cases before go-live; every score change is logged with a reason |
+| Roadmap threshold mis-set (too low floods the roadmap, too high blocks real work) | Low | Medium | Default threshold is 100; threshold changes require a documented reason and are logged globally |
 
 ---
 
@@ -181,7 +182,7 @@ Role-aware default views - BRs land on "My submissions," PMs land on "Needs tria
 
 > Roadmapping Tool v1.0 - now live.  
 > Three roles: Business Requestor, Product Manager, Leadership.  
-> Key capabilities: structured intake with optional AI-assisted draft fill, auto case numbering, RICE scoring with configurable weights, drag-and-drop roadmap, eight-stage lifecycle tracking, leadership insights dashboard, full audit trail on every case.  
+> Key capabilities: structured intake with optional AI-assisted draft fill, auto case numbering, industry-standard RICE scoring (Intercom canonical scales), configurable roadmap threshold, drag-and-drop roadmap, eight-stage lifecycle tracking, leadership insights dashboard, full audit trail on every case.  
 > Known limitations: localStorage only - not suitable for sensitive data. Role toggle is local state, not real auth. See FAQ for details.
 
 **External messaging (for portfolio and community sharing)**
@@ -230,7 +231,8 @@ These are the key signals to monitor in the first 30 days after launch. Each map
 | Engineering bypass rate | Requests that arrive outside the tool | Near zero by day 30 | PM observation |
 | Intake form submission rate | % of requests entering via tool | 100% within sprint 1 | Tool case count |
 | Time to triage | Hours from New to Under Review | Under 48 hours | Activity log timestamps |
-| RICE scoring completion rate | % of cases scored before status change | 100% - enforced by tool | Tool audit trail |
+| RICE scoring completion rate | % of cases scored before promotion past Under Review | 100% - enforced by tool | Tool audit trail |
+| RICE input consistency | Reach time window matches the team's chosen unit; Impact uses canonical multipliers; Confidence reflects actual evidence | Spot-checked weekly | PM review of recently scored cases |
 | Requestor satisfaction | Do BRs feel their requests are visible and fairly considered | Qualitative - survey or 1:1 | PM outreach |
 | Support questions about process | Inbound questions about how the intake works | Declining week over week | PM observation |
 | On Hold aging | Cases sitting in On Hold without documented revisit | Zero cases over 30 days without a note | Leadership Insights |
@@ -293,10 +295,10 @@ A walkthrough you can run live or record as a Loom. Switch roles from the nav at
 Open the live demo, pick the BR role, enter a name. Show "My submissions" as the role-aware default view. Click New request and optionally show **Fill with AI** to draft the form from a plain-language prompt, then refine fields, attach a doc, and submit. Point to the case number: "Permanent. Non-reusable. Even if this case gets declined, the number and its full history stay in the system."
 
 **2. The PM experience - 90 seconds**  
-Switch to PM role, land on "Needs triage." Open the new case and walk through the eight sections of detail. Adjust RICE inputs and show the score recompute against the roadmap threshold. Move status to Under Review - the reason modal fires - save. Open the Activity log and Revision history: "Every change has a reason and a diff. No more reconstructing context from a Slack thread three weeks later."
+Switch to PM role, land on "Needs triage." Open the new case and walk through the eight sections of detail. Adjust the RICE inputs - Reach as a raw count per quarter, Impact on the `{0.25, 0.5, 1, 2, 3}` scale, Confidence as a percentage, Effort in person-months - and show the score recompute against the roadmap threshold. Move status to Under Review - the reason modal fires - save. Open the Activity log and Revision history: "Every change has a reason and a diff. No more reconstructing context from a Slack thread three weeks later."
 
 **3. The roadmap - 45 seconds**  
-Go to PM Roadmap. Drag cases to reorder. Open Settings, change a RICE weight, save with a reason. "The weights are configurable so teams can tune the framework to their context without replacing it."
+Go to PM Roadmap. Drag cases to reorder. Open Settings, adjust the roadmap threshold, save with a reason. "The scoring scales are fixed - that's what makes RICE comparable - but the threshold lets each team calibrate where the bar is for their context."
 
 **4. Leadership visibility - 45 seconds**  
 Switch to Leadership, land on Insights. Click a number on the scoreboard and drill down to the underlying cases. "Leadership can now answer what is in flight and what is stalled without pulling a PM into a meeting."
@@ -353,7 +355,7 @@ It is a template and demo, not production software. There is no real auth - the 
 So any product org can run the demo instantly with zero setup. The goal was to make the workflow evaluation frictionless - a team should be able to decide whether this model works for them in five minutes, not after an IT provisioning ticket.
 
 **Why RICE?**  
-Because it is the most defensible lightweight framework: (Reach x Impact x Confidence) / Effort. Configurable weights mean teams can tune it to their context without discarding it. The threshold concept makes the roadmapping decision explicit and auditable rather than vibes-based.
+Because it is the most defensible lightweight framework: `(Reach x Impact x Confidence) / Effort`. This tool uses the industry-standard Intercom (2017) scales - Reach as a raw count per fixed period, Impact on the canonical `{0.25, 0.5, 1, 2, 3}` multiplier scale, Confidence as a percentage, Effort in person-months - so scores are comparable across cases and against other orgs' RICE work. There are deliberately no per-dimension weight knobs: the input scales are the weights, and adding tunable weights on top breaks the comparability that makes RICE useful in the first place. The roadmap threshold is the only knob, and the team calibrates it against a handful of known-good cases.
 
 **Can we fork and customize it?**  
 See the LICENSE file in the repo for current terms. Seed data, color palette, and status labels all live in isolated files for easy swapping: src/lib/seed.js, tailwind.config.js, src/lib/constants.js.

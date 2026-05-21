@@ -109,16 +109,23 @@ function HorizontalBars({ items, maxValue }) {
   );
 }
 
-function RiceBarChart({ cases, maxTotal = 20 }) {
+function RiceBarChart({ cases, maxTotal }) {
   if (cases.length === 0) {
     return <p className="text-sm italic text-slate-400">No RICE scores yet.</p>;
   }
+
+  // RICE scores are unbounded in the industry-standard formula (Reach is a
+  // raw count), so scale bars to the highest visible score rather than to
+  // a fixed ceiling.
+  const derivedMax =
+    maxTotal ??
+    Math.max(1, ...cases.map((c) => Number(c.rice?.weighted_total) || 0));
 
   return (
     <ul className="space-y-3">
       {cases.map((c) => {
         const score = c.rice.weighted_total;
-        const pct = Math.min(100, (score / maxTotal) * 100);
+        const pct = Math.min(100, (score / derivedMax) * 100);
         return (
           <li key={c.id}>
             <div className="mb-1 flex items-center justify-between gap-2 text-xs">

@@ -87,7 +87,7 @@ export function DashboardCaseCard({ caseObj, canView }) {
                   }
                   title={
                     riceTotal != null
-                      ? `RICE total ${riceTotal}`
+                      ? `RICE score ${riceTotal}`
                       : "Not yet RICE-scored"
                   }
                 >

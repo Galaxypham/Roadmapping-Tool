@@ -1,59 +1,37 @@
 import {
   DEFAULT_RICE_CONFIG,
-  RICE_SCORE_MAX,
-  RICE_SCORE_MIN,
+  RICE_CONFIDENCE_VALUES,
+  RICE_IMPACT_VALUES,
 } from "./constants.js";
 
 export const RICE_DIMENSIONS = ["reach", "impact", "confidence", "effort"];
 
-// True RICE formula: (Reach × Impact × Confidence) ÷ Effort.
-// Weights act as multipliers on each dimension — reach_weight, impact_weight,
-// and confidence_weight scale the numerator; effort_weight scales the
-// denominator (higher = heavier penalty for costly work).
-// With all weights at 1.0 this is standard unweighted RICE.
-export function calculateRice(scores, config) {
-  if (!scores || !config) return null;
+// Industry-standard RICE (Intercom, 2017):
+//   Score = (Reach × Impact × Confidence) / Effort
+//
+// - Reach: positive number (people/events per fixed time window)
+// - Impact: one of the canonical multipliers (0.25 / 0.5 / 1 / 2 / 3)
+// - Confidence: percentage as decimal (0.5 / 0.8 / 1.0)
+// - Effort: positive number in person-months (allows halves)
+//
+// The result is in the same units as Reach (per the chosen time window),
+// scaled by impact depth and discounted by confidence and cost.
+export function calculateRice(scores, _config) {
+  if (!scores) return null;
   const { reach, impact, confidence, effort } = scores;
   if (
-    reach == null ||
-    impact == null ||
-    confidence == null ||
-    effort == null
+    !isValidReach(reach) ||
+    !isValidImpact(impact) ||
+    !isValidConfidence(confidence) ||
+    !isValidEffort(effort)
   ) {
     return null;
   }
 
-  const values = { reach, impact, confidence, effort };
-  for (const key of RICE_DIMENSIONS) {
-    const value = Number(values[key]);
-    if (
-      Number.isNaN(value) ||
-      value < RICE_SCORE_MIN ||
-      value > RICE_SCORE_MAX
-    ) {
-      return null;
-    }
-  }
-
-  const numerator =
-    Number(reach) * config.reach_weight *
-    Number(impact) * config.impact_weight *
-    Number(confidence) * config.confidence_weight;
-  const denominator = Number(effort) * config.effort_weight;
-
+  const numerator = Number(reach) * Number(impact) * Number(confidence);
+  const denominator = Number(effort);
   if (denominator === 0) return null;
-  return Math.round((numerator / denominator) * 100) / 100;
-}
 
-// Maximum possible score: all numerator dimensions at 5, effort at 1 (minimum).
-export function calculateMaxRiceTotal(config) {
-  if (!config) return RICE_SCORE_MAX * RICE_SCORE_MAX * RICE_SCORE_MAX / RICE_SCORE_MIN;
-  const numerator =
-    RICE_SCORE_MAX * config.reach_weight *
-    RICE_SCORE_MAX * config.impact_weight *
-    RICE_SCORE_MAX * config.confidence_weight;
-  const denominator = RICE_SCORE_MIN * config.effort_weight;
-  if (denominator === 0) return null;
   return Math.round((numerator / denominator) * 100) / 100;
 }
 
@@ -66,22 +44,83 @@ export function meetsRoadmapThreshold(total, config) {
   return total > getRoadmapThreshold(config);
 }
 
-export function isValidRiceScore(value) {
+// Per-dimension validators — each RICE input has its own valid domain.
+export function isValidReach(value) {
+  if (value == null || value === "") return false;
   const n = Number(value);
-  return !Number.isNaN(n) && n >= RICE_SCORE_MIN && n <= RICE_SCORE_MAX;
+  return Number.isFinite(n) && n > 0;
+}
+
+export function isValidImpact(value) {
+  if (value == null || value === "") return false;
+  const n = Number(value);
+  return RICE_IMPACT_VALUES.includes(n);
+}
+
+export function isValidConfidence(value) {
+  if (value == null || value === "") return false;
+  const n = Number(value);
+  return RICE_CONFIDENCE_VALUES.includes(n);
+}
+
+export function isValidEffort(value) {
+  if (value == null || value === "") return false;
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0;
+}
+
+// Single-call validator used by AppContext when rehydrating cases.
+export function isValidRiceScores(scores) {
+  if (!scores) return false;
+  return (
+    isValidReach(scores.reach) &&
+    isValidImpact(scores.impact) &&
+    isValidConfidence(scores.confidence) &&
+    isValidEffort(scores.effort)
+  );
+}
+
+// Display helpers — keep numeric formatting consistent across UI/PDF/logs.
+export function formatReach(value) {
+  if (value == null) return "—";
+  return Number(value).toLocaleString();
+}
+
+export function formatImpact(value) {
+  if (value == null) return "—";
+  const n = Number(value);
+  const label = {
+    3: "Massive",
+    2: "High",
+    1: "Medium",
+    0.5: "Low",
+    0.25: "Minimal",
+  }[n];
+  return label ? `${label} (${n}×)` : `${n}×`;
+}
+
+export function formatConfidence(value) {
+  if (value == null) return "—";
+  return Math.round(Number(value) * 100) + "%";
+}
+
+export function formatEffort(value) {
+  if (value == null) return "—";
+  const n = Number(value);
+  return n === 1 ? "1 person-month" : `${n} person-months`;
 }
 
 export function formatRiceSummary(scores, total) {
   return (
     "Reach " +
-    scores.reach +
+    formatReach(scores.reach) +
     ", Impact " +
-    scores.impact +
+    formatImpact(scores.impact) +
     ", Confidence " +
-    scores.confidence +
+    formatConfidence(scores.confidence) +
     ", Effort " +
-    scores.effort +
-    (total != null ? " (Total: " + total + ")" : "")
+    formatEffort(scores.effort) +
+    (total != null ? " (Score: " + total + ")" : "")
   );
 }
 

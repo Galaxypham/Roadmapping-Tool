@@ -38,14 +38,43 @@ This template solves that by making request flow and decisions explicit:
 - Pipeline statuses: `New -> Under Review -> Roadmapped -> On Hold -> Declined`
 - Lifecycle stages from Discovery through Deprecated, plus Off-track
 - BR intake `Fill with AI` flow (Gemini) to draft form fields from a plain-language project description
-- RICE scoring — (Reach × Impact × Confidence) ÷ Effort — with configurable weights per dimension and a roadmap threshold
-- RICE totals are shown as standalone weighted scores
+- Industry-standard RICE scoring (Intercom, 2017): `(Reach × Impact × Confidence) ÷ Effort`
+  - Reach: raw count of people/events per fixed period (e.g. users/quarter)
+  - Impact: canonical multiplier scale `{0.25, 0.5, 1, 2, 3}` (Minimal → Massive)
+  - Confidence: percentage `{50%, 80%, 100%}`
+  - Effort: person-months
+  - Only the roadmap threshold is configurable — no per-dimension weight knobs
 - Drag-and-drop roadmap ranking with `@dnd-kit`
 - Leadership Insights with drill-down metrics
 - Case activity log + revision history
 - Restriction-aware access controls and allowlist support
 - PDF exports (Cases, Roadmap, Lifecycle, Insights)
 - Six fictional B2B SaaS seed cases (`@example.com` emails)
+
+---
+
+## How RICE scoring works
+
+This tool implements the original Intercom (2017) RICE formulation:
+
+```text
+RICE score = (Reach × Impact × Confidence) ÷ Effort
+```
+
+| Dimension      | Unit / scale                                                          | Notes                                                                                              |
+| -------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Reach**      | Raw count of people/events per fixed period                           | Pick a time window once (e.g. "per quarter") and reuse it for every case. Count *actually affected*. |
+| **Impact**     | Fixed multiplier: `3` Massive, `2` High, `1` Medium, `0.5` Low, `0.25` Minimal | Per person reached, not total.                                                                     |
+| **Confidence** | Percentage as decimal: `1.0` (100%), `0.8` (80%), `0.5` (50%)         | If your honest answer is < 50%, the case isn't ready to score — go gather data first.              |
+| **Effort**     | Person-months across product + design + engineering                   | Round to the nearest 0.5. Don't sandbag — high-effort work should clear a higher bar.              |
+
+The result is a comparable number, not an "out of 100" rating. To calibrate the **roadmap threshold** in Settings:
+
+1. Score 3–5 cases you already know belong on the roadmap.
+2. Score 3–5 cases you already know don't.
+3. Set the threshold somewhere between the two clusters.
+
+There are deliberately no per-dimension weight knobs — the input scales *are* the weights, and adding tunable weights on top breaks the cross-case and cross-org comparability that makes RICE useful.
 
 ---
 
@@ -109,9 +138,11 @@ src/
     constants.js
     format.js
     rice.js
+    riceMigration.js
     seed.js
     storage.js
     leadershipAnalytics.js
+    dashboardFilters.js
     dashboardPdf.js
   context/
     AppContext.jsx

@@ -19,7 +19,8 @@ import {
   migratePriority,
 } from "../lib/constants.js";
 import { uuid } from "../lib/format.js";
-import { calculateRice, isValidRiceScore } from "../lib/rice.js";
+import { calculateRice, isValidRiceScores } from "../lib/rice.js";
+import { migrateLegacyRice } from "../lib/riceMigration.js";
 import { buildSeedData } from "../lib/seed.js";
 import * as storage from "../lib/storage.js";
 
@@ -73,21 +74,23 @@ function ensureLifecycleStarted(cases) {
 
 function normalizeCaseRice(caseObj, riceConfig) {
   if (!caseObj.rice || caseObj.rice.reach == null) return caseObj;
-  const { reach, impact, confidence, effort } = caseObj.rice;
-  const valid = [reach, impact, confidence, effort].every(isValidRiceScore);
-  if (!valid) {
+
+  // Old saved data used a 1–5 scale for every dimension. Detect that
+  // shape and lift it onto the new industry-standard scales before
+  // computing the score.
+  const migrated = migrateLegacyRice(caseObj.rice);
+
+  if (!isValidRiceScores(migrated)) {
     return {
       ...caseObj,
-      rice: { ...caseObj.rice, weighted_total: null },
+      rice: { ...migrated, weighted_total: null },
     };
   }
-  const weighted_total = calculateRice(
-    { reach, impact, confidence, effort },
-    riceConfig,
-  );
+
+  const weighted_total = calculateRice(migrated, riceConfig);
   return {
     ...caseObj,
-    rice: { ...caseObj.rice, weighted_total },
+    rice: { ...migrated, weighted_total },
   };
 }
 
@@ -258,17 +261,7 @@ export function AppProvider({ children }) {
   const updateRiceConfig = useCallback(
     (nextConfig, performedBy, reason) => {
       const summary =
-        "Weights: Reach " +
-        nextConfig.reach_weight +
-        ", Impact " +
-        nextConfig.impact_weight +
-        ", Confidence " +
-        nextConfig.confidence_weight +
-        ", Effort " +
-        nextConfig.effort_weight +
-        ". Roadmap threshold: above " +
-        nextConfig.roadmap_threshold +
-        ".";
+        "Roadmap threshold updated to above " + nextConfig.roadmap_threshold + ".";
       const now = new Date().toISOString();
       setState((s) => {
         const recomputed = s.cases.map((c) => {

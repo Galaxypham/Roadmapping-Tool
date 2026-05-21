@@ -193,40 +193,66 @@ export const DEFAULT_APP_SETTINGS = {
   stale_threshold_days: 7,
 };
 
-// Default RICE weights and roadmap threshold. Mutable via Settings (PM only).
-export const RICE_SCORE_MIN = 1;
-export const RICE_SCORE_MAX = 5;
+// Industry-standard RICE configuration (Intercom, 2017).
+//
+//   Score = (Reach × Impact × Confidence) / Effort
+//
+// Reach   — number of people / events affected in a fixed time window
+//           (e.g. 1,500 users per quarter). Free-form positive number.
+// Impact  — depth of benefit per person, on a fixed multiplier scale:
+//           0.25 Minimal, 0.5 Low, 1 Medium, 2 High, 3 Massive.
+// Confidence — a percentage expressed as a decimal: 0.5 / 0.8 / 1.0.
+// Effort  — total person-months estimated to deliver. Free-form positive
+//           number; 0.5 = "half a person-month" is a common minimum.
+//
+// There are no per-dimension weights in standard RICE — the scale of each
+// input is the weight. The only tunable here is the roadmap threshold.
 
 export const DEFAULT_RICE_CONFIG = {
-  reach_weight: 1.0,
-  impact_weight: 1.0,
-  confidence_weight: 1.0,
-  effort_weight: 1.0,
-  roadmap_threshold: 20,
+  roadmap_threshold: 100,
 };
 
-export const RICE_SCORE_OPTIONS = [1, 2, 3, 4, 5];
+// Impact: fixed multiplier scale (Intercom canonical values).
+export const RICE_IMPACT_OPTIONS = [
+  { value: 3, label: "Massive (3×)" },
+  { value: 2, label: "High (2×)" },
+  { value: 1, label: "Medium (1×)" },
+  { value: 0.5, label: "Low (0.5×)" },
+  { value: 0.25, label: "Minimal (0.25×)" },
+];
+
+// Confidence: percentage as a decimal multiplier.
+export const RICE_CONFIDENCE_OPTIONS = [
+  { value: 1.0, label: "High (100%)" },
+  { value: 0.8, label: "Medium (80%)" },
+  { value: 0.5, label: "Low (50%)" },
+];
+
+export const RICE_IMPACT_VALUES = RICE_IMPACT_OPTIONS.map((o) => o.value);
+export const RICE_CONFIDENCE_VALUES = RICE_CONFIDENCE_OPTIONS.map(
+  (o) => o.value,
+);
 
 export const RICE_TOOLTIPS = {
   reach: {
-    title: "Reach (1–5)",
+    title: "Reach",
     description:
-      "How widely the work lands. 1 affects a small group; 5 affects most of the org or customer base.",
+      "Number of people or events affected in a fixed time window (e.g. users per quarter, tickets per month). Pick a unit and stick with it across cases.",
   },
   impact: {
-    title: "Impact (1–5)",
+    title: "Impact",
     description:
-      "Depth of benefit per person affected. 1 is minimal; 5 is transformative.",
+      "Depth of benefit per person affected. Fixed RICE scale: 3 Massive, 2 High, 1 Medium, 0.5 Low, 0.25 Minimal.",
   },
   confidence: {
-    title: "Confidence (1–5)",
+    title: "Confidence",
     description:
-      "How much evidence backs your estimates. 1 is guesswork; 5 is validated data.",
+      "Percentage confidence in your Reach, Impact, and Effort estimates. 100% = backed by data, 80% = some evidence, 50% = gut feel. Below 50% is a moonshot — go gather more data.",
   },
   effort: {
-    title: "Effort (1–5)",
+    title: "Effort (person-months)",
     description:
-      "Estimated delivery cost. 1 is a small lift; 5 is a major program.",
+      "Total estimated work to deliver, in person-months across product, design, and engineering. Use 0.5 for half-month efforts; round to the nearest half-month for anything larger.",
   },
 };
 

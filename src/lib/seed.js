@@ -169,7 +169,10 @@ export function buildSeedData() {
         },
       ],
       rice: riceWith(
-        { reach: 3, impact: 3, confidence: 4, effort: 2 },
+        // ~800 CSMs affected per quarter, Medium impact, 80% confidence,
+        // ~2 person-months to ship the toggle + delegate routing.
+        // Score = 800 × 1 × 0.8 / 2 = 320.
+        { reach: 800, impact: 1, confidence: 0.8, effort: 2 },
         "Avery Chen",
         "2026-04-29T16:10:00Z",
       ),
@@ -193,7 +196,8 @@ export function buildSeedData() {
         {
           id: "log-2c",
           action_type: ACTION_TYPE.RICE_SCORED,
-          action_detail: "RICE scored: Reach 3, Impact 3, Confidence 4, Effort 2 (Total: 12)",
+          action_detail:
+            "RICE scored: Reach 800, Impact Medium (1×), Confidence 80%, Effort 2 person-months (Score: 320)",
           reason: "First pass score. Effort estimate from the frontend team after a 30 min spike.",
           performed_by: "Avery Chen",
           created_at: "2026-04-29T16:10:00Z",
@@ -253,7 +257,11 @@ export function buildSeedData() {
         },
       ],
       rice: riceWith(
-        { reach: 4, impact: 5, confidence: 4, effort: 4 },
+        // ~1,200 analysts + downstream stakeholders run QBR pulls each quarter.
+        // High impact (kills the typo-driven QBR errors), 80% confidence,
+        // 3 person-months of work to ship filter-faithful CSV + XLSX.
+        // Score = 1200 × 2 × 0.8 / 3 = 640.
+        { reach: 1200, impact: 2, confidence: 0.8, effort: 3 },
         "Morgan Reyes",
         "2026-04-02T11:20:00Z",
       ),
@@ -277,7 +285,8 @@ export function buildSeedData() {
         {
           id: "log-3c",
           action_type: ACTION_TYPE.RICE_SCORED,
-          action_detail: "RICE scored: Reach 4, Impact 5, Confidence 4, Effort 4 (Total: 17)",
+          action_detail:
+            "RICE scored: Reach 1,200, Impact High (2×), Confidence 80%, Effort 3 person-months (Score: 640)",
           reason: "Reach is high (every RevOps analyst), impact is high (QBR cycle pain), effort is real because of filter parity.",
           performed_by: "Morgan Reyes",
           created_at: "2026-04-02T11:20:00Z",
@@ -375,7 +384,11 @@ export function buildSeedData() {
         },
       ],
       rice: riceWith(
-        { reach: 3, impact: 4, confidence: 3, effort: 3 },
+        // ~450 employees affected (full company). High impact on a retention
+        // lever, 50% confidence because HRIS integration scope still squishy,
+        // ~5 person-months across eng + people-ops.
+        // Score = 450 × 2 × 0.5 / 5 = 90.
+        { reach: 450, impact: 2, confidence: 0.5, effort: 5 },
         "Avery Chen",
         "2026-03-20T14:00:00Z",
       ),
@@ -483,7 +496,11 @@ export function buildSeedData() {
         },
       ],
       rice: riceWith(
-        { reach: 3, impact: 4, confidence: 3, effort: 5 },
+        // ~2,500 customer accounts hit per renewal cycle. High impact on
+        // renewal email engagement, 50% confidence (uplift model is
+        // directional), 6 person-months for the new product surface.
+        // Score = 2500 × 2 × 0.5 / 6 ≈ 416.67.
+        { reach: 2500, impact: 2, confidence: 0.5, effort: 6 },
         "Morgan Reyes",
         "2026-04-10T10:00:00Z",
       ),
@@ -508,7 +525,8 @@ export function buildSeedData() {
         {
           id: "log-5b",
           action_type: ACTION_TYPE.RICE_SCORED,
-          action_detail: "RICE scored: Reach 3, Impact 4, Confidence 3, Effort 5 (Total: 15)",
+          action_detail:
+            "RICE scored: Reach 2,500, Impact High (2×), Confidence 50%, Effort 6 person-months (Score: 416.67)",
           reason: "Initial scoring. Effort is high because the timeline view is essentially a new product surface.",
           performed_by: "Morgan Reyes",
           created_at: "2026-04-10T10:00:00Z",

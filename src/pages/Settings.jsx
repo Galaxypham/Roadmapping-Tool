@@ -70,10 +70,6 @@ export default function Settings() {
 
   const confirmRiceSave = (reason) => {
     const coerced = {
-      reach_weight: Math.max(0, Number(draftCfg.reach_weight) || 0),
-      impact_weight: Math.max(0, Number(draftCfg.impact_weight) || 0),
-      confidence_weight: Math.max(0, Number(draftCfg.confidence_weight) || 0),
-      effort_weight: Math.max(0, Number(draftCfg.effort_weight) || 0),
       roadmap_threshold: Math.max(
         1,
         Number(draftCfg.roadmap_threshold) || DEFAULT_RICE_CONFIG.roadmap_threshold,
@@ -96,30 +92,10 @@ export default function Settings() {
   };
 
   const riceHelp = {
-    reach_weight: {
-      title: "Reach weight",
-      description:
-        "Multiplier for the Reach score (1–5). Default 1.0. Increase to prioritize breadth of impact in the total.",
-    },
-    impact_weight: {
-      title: "Impact weight",
-      description:
-        "Multiplier for the Impact score (1–5). Default 1.0. Increase when depth of benefit should matter more.",
-    },
-    confidence_weight: {
-      title: "Confidence weight",
-      description:
-        "Multiplier for the Confidence score (1–5). Default 1.0. Increase to reward well-validated estimates.",
-    },
-    effort_weight: {
-      title: "Effort weight",
-      description:
-        "Multiplier for the Effort score in the denominator. Default 1.0. Increasing this weight penalizes high-effort work more heavily, lowering the total score.",
-    },
     roadmap_threshold: {
       title: "Roadmap threshold",
       description:
-        "Cases scoring above this number are flagged as strong roadmap candidates in the RICE editor. PMs still decide when a case actually moves to Roadmapped. Default: 20.",
+        "Cases with a RICE score above this number are flagged as strong roadmap candidates in the RICE editor. PMs still decide when a case actually moves to Roadmapped. The right value depends on your Reach unit (users/quarter, tickets/month, etc.) — calibrate against a few known-good cases.",
     },
   };
 
@@ -128,7 +104,7 @@ export default function Settings() {
       <div>
         <h1 className="text-xl font-semibold text-slate-900">Settings</h1>
         <p className="mt-1 text-sm text-slate-500">
-          Tweak your display name, RICE scoring rules, and data management options.
+          Tweak your display name, the RICE roadmap threshold, and data management options.
         </p>
       </div>
 
@@ -163,71 +139,13 @@ export default function Settings() {
           <CardHeader
             title="RICE scoring"
             description={
-              "Each dimension is scored 1–5 on a case. Total = (Reach × Impact × Confidence) ÷ Effort. " +
-              "Weights scale each dimension — reach, impact, and confidence weights multiply the numerator; effort weight multiplies the denominator (higher = heavier penalty for costly work). " +
+              "Industry-standard RICE: Score = (Reach × Impact × Confidence) ÷ Effort. " +
+              "Reach is people/events per fixed period, Impact uses the 0.25–3 multiplier scale, Confidence is a percentage, Effort is person-months. " +
               "Cases scoring above the roadmap threshold are flagged as strong roadmap candidates."
             }
           />
           <CardBody className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field
-                label={
-                  <span className="flex items-center">
-                    Reach weight
-                    <InfoTooltip {...riceHelp.reach_weight} />
-                  </span>
-                }
-              >
-                <NumberInput
-                  step="0.1"
-                  value={draftCfg.reach_weight}
-                  onChange={(e) => setDraftCfg({ ...draftCfg, reach_weight: e.target.value })}
-                />
-              </Field>
-              <Field
-                label={
-                  <span className="flex items-center">
-                    Impact weight
-                    <InfoTooltip {...riceHelp.impact_weight} />
-                  </span>
-                }
-              >
-                <NumberInput
-                  step="0.1"
-                  value={draftCfg.impact_weight}
-                  onChange={(e) => setDraftCfg({ ...draftCfg, impact_weight: e.target.value })}
-                />
-              </Field>
-              <Field
-                label={
-                  <span className="flex items-center">
-                    Confidence weight
-                    <InfoTooltip {...riceHelp.confidence_weight} />
-                  </span>
-                }
-              >
-                <NumberInput
-                  step="0.1"
-                  value={draftCfg.confidence_weight}
-                  onChange={(e) =>
-                    setDraftCfg({ ...draftCfg, confidence_weight: e.target.value })
-                  }
-                />
-              </Field>
-              <Field
-                label={
-                  <span className="flex items-center">
-                    Effort weight
-                    <InfoTooltip {...riceHelp.effort_weight} />
-                  </span>
-                }
-              >
-                <NumberInput
-                  step="0.1"
-                  value={draftCfg.effort_weight}
-                  onChange={(e) => setDraftCfg({ ...draftCfg, effort_weight: e.target.value })}
-                />
-              </Field>
               <Field
                 label={
                   <span className="flex items-center">
