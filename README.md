@@ -5,7 +5,6 @@ Product intake and roadmapping template by Galaxy Pham.
 Built to make the full request pipeline visible and traceable so nothing falls through the cracks and nobody has to side-channel engineering to get heard.
 
 - Live demo: https://roadmapping-tool-seven.vercel.app
-- Launch kit: `LAUNCH_KIT.md`
 - Repo: https://github.com/Galaxypham/Roadmapping-Tool
 
 ---
